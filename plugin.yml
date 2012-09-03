@@ -1,0 +1,7 @@
+main: me.Delocaz.ChatUtils.ChatUtils
+version: 1.0
+name: ChatUtils
+author: Delocaz
+commands:
+    chatutils:
+        aliases: [cu, cur]

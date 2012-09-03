@@ -12,7 +12,7 @@ public class CUConfig {
 		cu.saveConfig();
 		logChat = cu.getConfig().getBoolean("logChat");
 		blockCaps = cu.getConfig().getBoolean("blockCaps");
-		color = cu.getConfig().getBoolean("blockCaps");
+		color = cu.getConfig().getBoolean("color");
 	}
 	
 }

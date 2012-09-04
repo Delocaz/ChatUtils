@@ -1,5 +1,5 @@
 main: me.Delocaz.ChatUtils.ChatUtils
-version: 1.0
+version: 1.1.1
 name: ChatUtils
 author: Delocaz
 commands:

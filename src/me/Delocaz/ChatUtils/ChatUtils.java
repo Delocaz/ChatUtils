@@ -3,11 +3,17 @@ package me.Delocaz.ChatUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import me.Delocaz.ChatUtils.Features.BlockCaps;
+import me.Delocaz.ChatUtils.Features.BlockSpam;
 import me.Delocaz.ChatUtils.Features.ChatLog;
 import me.Delocaz.ChatUtils.Features.Color;
+import me.Delocaz.ChatUtils.Features.DisableChat;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
@@ -34,12 +40,35 @@ public class ChatUtils extends JavaPlugin implements Listener {
 		features.add(new ChatLog(this));
 		features.add(new BlockCaps(this));
 		features.add(new Color(this));
+		features.add(new BlockSpam(this));
+		features.add(new DisableChat(this));
 		for (ChatFeature cf : features) {
 			cf.init();
 		}
 	}
 	@EventHandler
-	public void onPlayerChat(AsyncPlayerChatEvent e) {
+	public void onPlayerChat(final AsyncPlayerChatEvent e) {
+		if (!e.isAsynchronous()) {
+            execute(e);
+        } else {
+            final Future<Void> f = Bukkit.getScheduler().callSyncMethod(this, new Callable<Void>() {
+                public Void call() throws Exception {
+                    execute(e);
+                    return null;
+                }
+            });
+            try {
+                while (true) {
+                    try {
+                        f.get();
+                        break;
+                    } catch (final InterruptedException e1) {}
+                }
+            } catch (final ExecutionException e1) {
+            }
+        }
+	}
+	public void execute(AsyncPlayerChatEvent e) {
 		for (ChatFeature cf : features) {
 			cf.chat(e);
 		}
